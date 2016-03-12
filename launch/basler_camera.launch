@@ -1,8 +1,8 @@
 <launch>
-  <arg name="cam_width" default="1280" />
-  <arg name="cam_height" default="960" />
-  <arg name="cam_model" default="daA1280-54uc" />
-  <arg name="camera_frame" default="camera" />
+  <arg name="cam_width" default="1920" />
+  <arg name="cam_height" default="1200" />
+  <arg name="cam_model" default="acA1920-40um" />
+  <arg name="camera_frame" default="camera_40" />
 
   <!-- Choose the calibration file that corresponds to the resolution being used. -->
   <arg name="cam_calibration_file" default="file://$(find basler_camera)/config/$(arg cam_model)_$(arg cam_width)x$(arg cam_height).yaml" />
