@@ -22,7 +22,7 @@ SET( CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} -Wl,-E")
 ## Your package locations should be listed before other locations
 include_directories(include ${catkin_INCLUDE_DIRS} $ENV{PYLON_ROOT}/include $ENV{GENICAM_ROOT_V2_3}/library/CPP/include)
 link_directories(
-  $ENV{PYLON_ROOT}/lib64 
+  $ENV{PYLON_ROOT}/lib
   $ENV{GENICAM_ROOT_V2_3}/bin/Linux64_x64
   $ENV{GENICAM_ROOT_V2_3}/bin/Linux64_x64/GenApi/Generic
   $ENV{GENICAM_ROOT_V2_3}/library/CPP/lib/Linux64_x64
@@ -44,5 +44,4 @@ target_link_libraries(basler_camera_node
   pylonutility
   GCBase_gcc_v3_0_Basler_pylon_v5_0
   GenApi_gcc_v3_0_Basler_pylon_v5_0
-) 
-
+)

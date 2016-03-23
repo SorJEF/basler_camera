@@ -1,7 +1,7 @@
 <launch>
   <arg name="cam_width" default="1920" />
   <arg name="cam_height" default="1200" />
-  <arg name="cam_model" default="acA1920-40um" />
+  <arg name="cam_model" default="acA1920-155um" />
   <arg name="camera_frame" default="camera" />
 
   <!-- Choose the calibration file that corresponds to the resolution being used. -->
