@@ -209,11 +209,12 @@ int main(int argc, char* argv[])
 
                 camera.Open();
 
-                load_parameters(camera);
-
                 dynamic_reconfigure::Server<basler_camera::CameraConfig> server;
                 dynamic_reconfigure::Server<basler_camera::CameraConfig>::CallbackType f;
                 f = boost::bind(&configure_callback, _1, _2);
+
+                load_parameters(camera);
+
                 server.setCallback(f);
 
                 camera.StartGrabbing(GrabStrategy_LatestImageOnly);
