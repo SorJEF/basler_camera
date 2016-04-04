@@ -221,13 +221,13 @@ int main(int argc, char* argv[])
 
                 while (camera.IsGrabbing() && ros::ok())
                 {
-                        camera.RetrieveResult( 1, ptrGrabResult, TimeoutHandling_Return);
+                        camera.RetrieveResult(1, ptrGrabResult, TimeoutHandling_Return);
                         ros::spinOnce();
                 }
         }
         catch (GenICam::GenericException &e)
         {
-                ROS_ERROR_STREAM ( "An exception occurred." << e.GetDescription());
+                ROS_ERROR_STREAM ("An exception occurred." << e.GetDescription());
                 exitCode = 1;
         }
         return exitCode;
