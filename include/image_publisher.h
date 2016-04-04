@@ -24,7 +24,7 @@ namespace Pylon
     ImagePublisher(ros::NodeHandle nh, sensor_msgs::CameraInfo::Ptr cinfo, string frame_id)
       : nh_(nh), it_(nh_) {
       cam_pub_ = it_.advertiseCamera("camera/image_raw", 1);
-      converter_.OutputPixelFormat = PixelType_RGB8packed;
+      converter_.OutputPixelFormat = PixelType_Mono8;
       cinfo_ = cinfo;
       frame_id_ = frame_id;
     }
@@ -41,14 +41,14 @@ namespace Pylon
       ros::Time timestamp = ros::Time::now();
       GenApi::CIntegerPtr width(camera.GetNodeMap().GetNode("Width"));
       GenApi::CIntegerPtr height(camera.GetNodeMap().GetNode("Height"));
-      cv::Mat cv_img(width->GetValue(), height->GetValue(), CV_8UC3);
+      cv::Mat cv_img(width->GetValue(), height->GetValue(), CV_8U);
 
       if (ptrGrabResult->GrabSucceeded())
       {
         converter_.Convert(pylon_image_, ptrGrabResult);
 
-        cv_img = cv::Mat(ptrGrabResult->GetHeight(), ptrGrabResult->GetWidth(), CV_8UC3,(uint8_t*)pylon_image_.GetBuffer());
-        sensor_msgs::ImagePtr image = cv_bridge::CvImage(std_msgs::Header(), "rgb8", cv_img).toImageMsg();
+        cv_img = cv::Mat(ptrGrabResult->GetHeight(), ptrGrabResult->GetWidth(), CV_8U, (uint8_t*)pylon_image_.GetBuffer());
+        sensor_msgs::ImagePtr image = cv_bridge::CvImage(std_msgs::Header(), "mono8", cv_img).toImageMsg();
 
         sensor_msgs::CameraInfo::Ptr cinfo = cinfo_;
 

@@ -216,7 +216,7 @@ int main(int argc, char* argv[])
                 f = boost::bind(&configure_callback, _1, _2);
                 server.setCallback(f);
 
-                camera.StartGrabbing();
+                camera.StartGrabbing(GrabStrategy_LatestImageOnly);
 
                 while (camera.IsGrabbing() && ros::ok())
                 {
