@@ -227,7 +227,7 @@ int main(int argc, char* argv[])
         }
         catch (GenICam::GenericException &e)
         {
-                ROS_ERROR_STREAM ("An exception occurred." << e.GetDescription());
+                ROS_ERROR_STREAM ("An exception occurred. " << e.GetDescription());
                 exitCode = 1;
         }
         return exitCode;

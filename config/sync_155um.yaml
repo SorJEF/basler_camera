@@ -6,19 +6,11 @@ basler_params:
   -
     name: ExposureTime
     type: float
-    value: 15000.0
+    value: 20000.0
   -
     name: AcquisitionMode
     type: enum
     value: Continuous
-  -
-    name: ExposureAuto
-    type: enum
-    value: 'Off'
-  -
-    name: GainAuto
-    type: enum
-    value: 'Off'
   -
     name: Gain
     type: float

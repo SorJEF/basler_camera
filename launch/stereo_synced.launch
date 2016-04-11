@@ -1,25 +1,48 @@
 <launch>
 
-  <node ns="right" name="basler_camera_master" pkg="basler_camera" type="basler_camera_node" output="screen">
-    <param name="frame_rate" type="int" value="10" />
-    <param name="frame_id" type="string" value="right_camera" />
-    <!-- <param name="camera_info_url" type="string" value="file://$(find basler_camera)/config/acA1920-40um_1920x1200.yaml" /> -->
+  <node ns="left" name="camera" pkg="basler_camera" type="basler_camera_node" output="screen" respawn="true">
+    <param name="frame_id" type="string" value="left_camera"/>
+    <param name="frame_rate" type="int" value="10"/>
+    <param name="camera_info_url" type="string" value="file://$(find basler_camera)/config/acA1920-40um_1920x1200.yaml" />
     <param name="serial_number" type="string" value="21787921"/>
-    <rosparam command="load" file="$(find basler_camera)/config/dart_sync_master.yaml"/>
+    <rosparam command="load" file="$(find basler_camera)/config/sync_40um.yaml"/>
   </node>
 
-  <node ns="left" name="basler_camera_master" pkg="basler_camera" type="basler_camera_node" output="screen">
-    <param name="frame_rate" type="int" value="10" />
-    <param name="frame_id" type="string" value="left_camera" />
-    <!-- <param name="camera_info_url" type="string" value="file://$(find basler_camera)/config/acA1920-155um_1920x1200.yaml" /> -->
+  <node ns="right" name="camera" pkg="basler_camera" type="basler_camera_node" output="screen" respawn="true">
+    <param name="frame_id" type="string" value="right_camera"/>
+    <param name="frame_rate" type="int" value="10"/>
+    <param name="camera_info_url" type="string" value="file://$(find basler_camera)/config/acA1920-155um_1920x1200.yaml" />
     <param name="serial_number" type="string" value="21585524"/>
-    <rosparam command="load" file="$(find basler_camera)/config/dart_sync_slave.yaml"/>
+    <rosparam command="load" file="$(find basler_camera)/config/sync_155um.yaml"/>
   </node>
 
-  <!-- <node ns="/left/camera" pkg="image_proc" type="image_proc" name="image_proc"/>
-  <node ns="/right/camera" pkg="image_proc" type="image_proc" name="image_proc"/> -->
+  <node ns="left" name="republish" type="republish" pkg="image_transport" output="screen" args="raw compressed">
+    <param name="format" value="png"/>
+  </node>
+  <node ns="right" name="republish" type="republish" pkg="image_transport" output="screen" args="raw compressed">
+    <param name="format" value="png"/>
+  </node>
 
-  <node ns="/left/camera" name="republish" type="republish" pkg="image_transport" output="screen" args="raw in:=/left/camera/image_raw compressed out:=/left/camera/image_raw/compressed" />
-  <node ns="/right/camera" name="republish" type="republish" pkg="image_transport" output="screen" args="raw in:=/right/camera/image_raw compressed out:=/right/camera/image_raw/compressed" />
+  <node pkg="stereo_image_proc" type="stereo_image_proc" name="stereo_image_proc">
+    <param name="approximate_sync" value="true"/>
+    <param name="queue_size" value="10"/>
+    <param name="_image_transport" value="compressed"/>
+  </node>
+
+  <node ns="left" pkg="image_rotate" type="image_rotate" name="rotated" respawn="true" output="screen">
+    <remap from="image" to="image_raw"/>
+    <remap from="rotated/image" to="image_raw/rotated"/>
+    <param name="target_y" value="1.0" />
+    <param name="source_frame_id" value="left_camera"/>
+    <param name="_image_transport" value="compressed"/>
+  </node>
+  <node ns="right" pkg="image_rotate" type="image_rotate" name="rotated" respawn="true" output="screen">
+    <remap from="image" to="image_raw"/>
+    <remap from="rotated/image" to="image_raw/rotated"/>
+    <param name="target_frame_id" value="right_camera"/>
+    <param name="target_y" value="1.0" />
+    <param name="source_frame_id" value="right_camera"/>
+    <param name="_image_transport" value="compressed"/>
+  </node>
 
 </launch>
