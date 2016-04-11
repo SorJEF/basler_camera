@@ -1,0 +1,23 @@
+<launch>
+  <node pkg="stereo_image_proc" type="stereo_image_proc" name="stereo_image_proc">
+    <param name="approximate_sync" value="true"/>
+    <param name="queue_size" value="10"/>
+    <param name="_image_transport" value="compressed"/>
+  </node>
+
+  <node ns="left" pkg="image_rotate" type="image_rotate" name="rotated" respawn="true" output="screen">
+    <remap from="image" to="image_raw"/>
+    <remap from="rotated/image" to="image_raw/rotated"/>
+    <param name="target_y" value="1.0" />
+    <param name="source_frame_id" value="left_camera"/>
+    <param name="_image_transport" value="compressed"/>
+  </node>
+  <node ns="right" pkg="image_rotate" type="image_rotate" name="rotated" respawn="true" output="screen">
+    <remap from="image" to="image_raw"/>
+    <remap from="rotated/image" to="image_raw/rotated"/>
+    <param name="target_frame_id" value="right_camera"/>
+    <param name="target_y" value="1.0" />
+    <param name="source_frame_id" value="right_camera"/>
+    <param name="_image_transport" value="compressed"/>
+  </node>
+</launch>
