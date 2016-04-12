@@ -18,6 +18,26 @@ using std::string;
 
 static CInstantCamera camera;
 
+void handle_bool_parameter(CInstantCamera& camera, string name, bool value)
+{
+        INodeMap& nodemap = camera.GetNodeMap();
+        try
+        {
+                ROS_INFO_STREAM("Setting boolean param " << name << " to " << value << ".");
+                CBooleanPtr this_node(nodemap.GetNode(name.c_str()));
+                if (!IsWritable(this_node))
+                {
+                        ROS_ERROR_STREAM("Basler parameter '" << name << "' isn't writable or doesn't exist.");
+                        return;
+                }
+                this_node->SetValue(value);
+        }
+        catch (const GenericException& e)
+        {
+                ROS_ERROR_STREAM(e.GetDescription());
+        }
+}
+
 void handle_int_parameter(CInstantCamera& camera, string name, int value)
 {
         INodeMap& nodemap = camera.GetNodeMap();
@@ -137,8 +157,14 @@ void configure_callback(basler_camera::CameraConfig &config, uint32_t level)
         handle_enum_parameter(camera, "ExposureAuto", config.exposure_auto);
         handle_enum_parameter(camera, "GainAuto", config.gain_auto);
         handle_float_parameter(camera, "Gain", config.gain);
-        handle_enum_parameter(camera, "TriggerMode", config.trigger_mode);
+        handle_enum_parameter(camera, "LineMode", config.line_mode);
         handle_enum_parameter(camera, "LineSelector", config.line_selector);
+        handle_enum_parameter(camera, "LineSource", config.line_source);
+        handle_bool_parameter(camera, "LineInverter", config.line_inverter);
+        handle_enum_parameter(camera, "TriggerMode", config.trigger_mode);
+        handle_enum_parameter(camera, "TriggerSelector", config.trigger_selector);
+        handle_enum_parameter(camera, "TriggerSource", config.trigger_source);
+        handle_enum_parameter(camera, "TriggerActivation", config.trigger_activation);
 }
 
 int main(int argc, char* argv[])
@@ -149,19 +175,19 @@ int main(int argc, char* argv[])
         camera_info_manager::CameraInfoManager cinfo_manager_(nh);
 
         int frame_rate;
-        if( !priv_nh.getParam("frame_rate", frame_rate) )
+        if(!priv_nh.getParam("frame_rate", frame_rate))
                 frame_rate = 20;
 
         string camera_info_url;
-        if( !priv_nh.getParam("camera_info_url", camera_info_url) )
+        if(!priv_nh.getParam("camera_info_url", camera_info_url))
                 camera_info_url = "";
 
         string frame_id;
-        if( !priv_nh.getParam("frame_id", frame_id) )
+        if(!priv_nh.getParam("frame_id", frame_id))
                 frame_id = "";
 
         std::string serial_number;
-        if( !priv_nh.getParam("serial_number", serial_number) )
+        if(!priv_nh.getParam("serial_number", serial_number))
                 serial_number = "";
 
         int exitCode = 0;
@@ -212,10 +238,9 @@ int main(int argc, char* argv[])
                 dynamic_reconfigure::Server<basler_camera::CameraConfig> server;
                 dynamic_reconfigure::Server<basler_camera::CameraConfig>::CallbackType f;
                 f = boost::bind(&configure_callback, _1, _2);
+                server.setCallback(f);
 
                 load_parameters(camera);
-
-                server.setCallback(f);
 
                 camera.StartGrabbing(GrabStrategy_LatestImageOnly);
 

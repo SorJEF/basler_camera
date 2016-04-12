@@ -14,6 +14,4 @@
     <param name="serial_number" type="string" value="21585524"/>
     <rosparam command="load" file="$(find basler_camera)/config/sync_155um.yaml"/>
   </node>
-
-  <node ns="camera" pkg="image_proc" type="image_proc" name="image_proc"/>
 </launch>
